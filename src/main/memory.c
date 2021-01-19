@@ -2646,8 +2646,8 @@ SEXP allocVector3(SEXPTYPE type, R_xlen_t length, R_allocator_t *allocator)
 	case LGLSXP:
 	    node_class = 1;
 	    alloc_size = NodeClassSize[1];
-	    if (R_UsedVSizeTrigger < R_V_maxused + alloc_size) {
-		    R_gc_internal(0);
+	    if (R_UsedVSizeTrigger < R_VSize - VHEAP_FREE() + alloc_size) {
+		    R_gc();
 		}
 	    if (FORCE_GC || NO_FREE_NODES() || VHEAP_FREE() < alloc_size) {
 		R_gc_internal(alloc_size);
@@ -2798,8 +2798,8 @@ SEXP allocVector3(SEXPTYPE type, R_xlen_t length, R_allocator_t *allocator)
     old_R_VSize = R_VSize;
 
     /* we need to do the gc here so allocSExp doesn't! */
-    if (R_UsedVSizeTrigger < R_V_maxused + alloc_size) {
-	R_gc_internal(0);
+    if (R_UsedVSizeTrigger < R_VSize - VHEAP_FREE() + alloc_size) {
+	    R_gc();
     }
     if (FORCE_GC || NO_FREE_NODES() || VHEAP_FREE() < alloc_size) {
 	R_gc_internal(alloc_size);
